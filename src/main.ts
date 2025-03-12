@@ -7,4 +7,5 @@ async function bootstrap() {
   console.log('works!');
 }
 
+
 void bootstrap();
