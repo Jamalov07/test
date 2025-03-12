@@ -18,8 +18,13 @@ jobs:
         with:
           node-version: '18'
 
+      - name: SSH kalitlarni sozlash
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
       - name: Serverga ulanish va yangilash
         run: |
-          ssh user@server_ip "cd test && git pull && pm2 restart test"
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh ${{ secrets.SERVER_NAME }}@${{ secrets.SERVER_IP }} "cd test && git stash && git pull && npm install && npm run build && pm2 restart test"
